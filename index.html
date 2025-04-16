@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Row Balancer</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f0f4f8;
+      color: #333;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h2 {
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+    }
+    .card {
+      background: #fff;
+      padding: 2rem;
+      border-radius: 1rem;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+      max-width: 400px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    .group {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .group strong {
+      font-size: 1.1rem;
+    }
+    .inputs {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      width: 45%;
+    }
+    input[type="number"] {
+      padding: 0.6rem;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 0.5rem;
+      text-align: center;
+      transition: border 0.2s;
+      min-width: 70px;
+    }
+    input[type="number"]:focus {
+      border-color: #3490dc;
+      outline: none;
+    }
+    .buttons {
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    button {
+      background: #3490dc;
+      color: #fff;
+      border: none;
+      padding: 0.8rem 1.2rem;
+      border-radius: 0.7rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      flex: 1;
+    }
+    button:hover {
+      background: #2779bd;
+    }
+    .reset-btn {
+      background: #6c757d;
+    }
+    .reset-btn:hover {
+      background: #5a6268;
+    }
+    .result {
+      padding: 1rem;
+      border-radius: 0.7rem;
+      background: #e8f7ff;
+      border: 1px solid #b5e4f5;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.4s ease;
+      width: 100%;
+    }
+    .result.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .result strong {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-size: 1.1rem;
+    }
+    .result .group {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .result .inputs {
+      width: 45%;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>✨ Row Balancer Tool</h2>
+
+  <div class="card">
+    <div class="result" id="result"></div>
+
+    <div class="group">
+      <div class="inputs">
+        <strong>Row 1:</strong>
+        <input type="number" id="r1c1">
+        <input type="number" id="r1c2">
+        <input type="number" id="r1c3">
+        <input type="number" id="r1c4">
+      </div>
+      <div class="inputs">
+        <strong>Row 2:</strong>
+        <input type="number" id="r2c1">
+        <input type="number" id="r2c2">
+        <input type="number" id="r2c3">
+        <input type="number" id="r2c4">
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button onclick="balance()">Balance Rows</button>
+      <button class="reset-btn" onclick="resetForm()">Reset</button>
+    </div>
+  </div>
+
+  <script>
+    function balanceRows(row1, row2) {
+      const sum1 = row1.reduce((a, b) => a + b, 0);
+      const sum2 = row2.reduce((a, b) => a + b, 0);
+      const diff = sum2 - sum1;
+
+      if (diff % 2 !== 0) {
+        return "❌ Impossible to balance (difference is odd)";
+      }
+
+      const targetDiff = diff / 2;
+
+      for (let i = 0; i < row1.length; i++) {
+        if (row2[i] - row1[i] === targetDiff) {
+          [row1[i], row2[i]] = [row2[i], row1[i]];
+          return { row1, row2 };
+        }
+      }
+
+      return "❌ No possible single swap to balance";
+    }
+
+    function balance() {
+      const row1 = [
+        Number(document.getElementById('r1c1').value),
+        Number(document.getElementById('r1c2').value),
+        Number(document.getElementById('r1c3').value),
+        Number(document.getElementById('r1c4').value)
+      ];
+      const row2 = [
+        Number(document.getElementById('r2c1').value),
+        Number(document.getElementById('r2c2').value),
+        Number(document.getElementById('r2c3').value),
+        Number(document.getElementById('r2c4').value)
+      ];
+
+      const result = balanceRows(row1, row2);
+      const resultDiv = document.getElementById('result');
+
+      if (typeof result === 'string') {
+        resultDiv.innerHTML = `<strong>${result}</strong>`;
+      } else {
+        resultDiv.innerHTML = `
+          <strong>✅ Balanced Successfully!</strong>
+          <div class="group">
+            <div class="inputs">
+              Row 1: <br>${result.row1.join('<br>')}
+            </div>
+            <div class="inputs">
+              Row 2: <br>${result.row2.join('<br>')}
+            </div>
+          </div>
+        `;
+      }
+
+      resultDiv.classList.add('show');
+    }
+
+    function resetForm() {
+      const inputs = document.querySelectorAll('input[type="number"]');
+      inputs.forEach(input => input.value = '');
+      const resultDiv = document.getElementById('result');
+      resultDiv.classList.remove('show');
+      resultDiv.innerHTML = '';
+    }
+  </script>
+
+</body>
+</html>
