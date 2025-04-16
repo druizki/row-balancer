@@ -142,72 +142,7 @@
     </div>
   </div>
 
-  <script>
-    function balanceRows(row1, row2) {
-      const sum1 = row1.reduce((a, b) => a + b, 0);
-      const sum2 = row2.reduce((a, b) => a + b, 0);
-      const diff = sum2 - sum1;
-
-      if (diff % 2 !== 0) {
-        return "❌ Impossible to balance (difference is odd)";
-      }
-
-      const targetDiff = diff / 2;
-
-      for (let i = 0; i < row1.length; i++) {
-        if (row2[i] - row1[i] === targetDiff) {
-          [row1[i], row2[i]] = [row2[i], row1[i]];
-          return { row1, row2 };
-        }
-      }
-
-      return "❌ No possible single swap to balance";
-    }
-
-    function balance() {
-      const row1 = [
-        Number(document.getElementById('r1c1').value),
-        Number(document.getElementById('r1c2').value),
-        Number(document.getElementById('r1c3').value),
-        Number(document.getElementById('r1c4').value)
-      ];
-      const row2 = [
-        Number(document.getElementById('r2c1').value),
-        Number(document.getElementById('r2c2').value),
-        Number(document.getElementById('r2c3').value),
-        Number(document.getElementById('r2c4').value)
-      ];
-
-      const result = balanceRows(row1, row2);
-      const resultDiv = document.getElementById('result');
-
-      if (typeof result === 'string') {
-        resultDiv.innerHTML = `<strong>${result}</strong>`;
-      } else {
-        resultDiv.innerHTML = `
-          <strong>✅ Balanced Successfully!</strong>
-          <div class="group">
-            <div class="inputs">
-              Row 1: <br>${result.row1.join('<br>')}
-            </div>
-            <div class="inputs">
-              Row 2: <br>${result.row2.join('<br>')}
-            </div>
-          </div>
-        `;
-      }
-
-      resultDiv.classList.add('show');
-    }
-
-    function resetForm() {
-      const inputs = document.querySelectorAll('input[type="number"]');
-      inputs.forEach(input => input.value = '');
-      const resultDiv = document.getElementById('result');
-      resultDiv.classList.remove('show');
-      resultDiv.innerHTML = '';
-    }
-  </script>
+  <script src="./index.obs.js"></script>
 
 </body>
 </html>
